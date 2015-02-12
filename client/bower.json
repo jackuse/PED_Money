@@ -1,0 +1,30 @@
+{
+  "name": "MyMoney",
+  "version": "0.0.1",
+  "authors": [
+    "Etienne Grandier-Vazeille <jackiller33@gmail.com>",
+    "A completer"
+  ],
+  "description": "MyMoney Web App",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.3.6",
+    "bootstrap": "~3.3.1",
+    "angular-resource": "~1.3.6",
+    "jquery-ui": "~1.11.2",
+    "angular-ui-router": "~0.2.13",
+    "angular-bootstrap": "~0.12.0",
+    "angular-lodash": "~0.1.2"
+  },
+  "resolutions": {
+    "angular": "~1.3.6"
+  }
+}

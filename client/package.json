@@ -1,0 +1,13 @@
+{
+  "name": "MyMoneyClient",
+  "version": "0.0.1",
+  "description": "MyMoneyClient web app",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "bower": "*"
+  },
+  "scripts": {
+    "install": "bower install"
+  }
+}
