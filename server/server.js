@@ -50,3 +50,32 @@ db.once('open', function (callback) {
 // apiExpense(app, expenseModel)
 // apiTools(app, userModel, expenseModel)
 // apiOther(app, userModel, expenseModel)
+
+
+
+
+// Example
+
+// module.exports = function (app, expenseModel) {
+// 	app.get('/api/expense/', getAllExpenses)
+// 	app.post('/api/expense/', addExpense)
+// 	app.get('/api/expense/:id', getExpense)
+// 	app.put('/api/expense/', getExpenseByTag)
+// 	app.delete('/api/expense/:id', deleteExpense)
+// 	app.post('/api/expense/:id', editExpense)
+
+
+// 	function getAllExpenses(req, resp , next) {
+// 		'use strict';
+// 		var userId = req.get('X-User-Id');
+
+// 		expenseModel.find({user: userId}, function (err, coll) {
+// 			if (!err) {
+// 				return resp.send(coll);
+// 			} else {
+// 				console.log(err);
+// 				next(err);
+// 			}
+// 		});
+// 	}
+// }
