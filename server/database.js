@@ -23,7 +23,7 @@ var Schema = mongoose.Schema;
 
 
 
-var ExpenseSchema = new Schema({
+/*var ExpenseSchema = new Schema({
 	title: String,
 	amount: Number,
 	// from:[FriendLinkSchema],
@@ -34,7 +34,7 @@ var ExpenseSchema = new Schema({
 	],
 	isEdit: Boolean,
 	user: String
-})
+})*/
 
 
 console.log('init db end')
