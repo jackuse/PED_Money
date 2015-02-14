@@ -1,10 +1,10 @@
 module.exports = {
 	getDB : function(){
 		return db
+	},
+	 getUserModel: function(){
+	 	return userModel
 	}
-	// getUserModel: function(){
-	// 	return userModel
-	// },
 	// getExpenseModel: function(){
 	// 	return expenseModel
 	// }
@@ -36,6 +36,14 @@ var ExpenseSchema = new Schema({
 	user: String
 })
 
+var UserSchema  = new Schema({
+	id: String,
+	username: String,
+	lastName: String,
+	firstName: String,
+	email: String,
+	password: String
+})
 
 console.log('init db end')
 
@@ -43,5 +51,5 @@ console.log('init db end')
 
 //Models
 
-// var userModel = mongoose.model('userModel', UserSchema);
+var userModel = mongoose.model('userModel', UserSchema);
 // var expenseModel = mongoose.model('expenseModel', ExpenseSchema);

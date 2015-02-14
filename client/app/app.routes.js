@@ -10,19 +10,19 @@
 		.config(configUiRoute)
 
 	function configUiRoute($stateProvider, $urlRouterProvider) {
-	  $urlRouterProvider.otherwise('/');
+	 $urlRouterProvider.otherwise('/login');
 	  // Now set up the states
 	  $stateProvider
 	  	.state('login', {
 	      url: '/login',
-	       templateUrl: 'components/auth/loginView.html'
-	 	   
+	       templateUrl: 'app/components/login/loginView.html',
+	 	   controller: 'LoginController'
 	     })
-	  	// .state('account', {
-	   //    url: '/account/{accountId}',
-	   //    templateUrl: 'components/account/accountView.html',
-	   //    controller: 'accountController'
-	   //  })
+	  	 .state('signup', {
+	      url: '/signup',
+	     templateUrl: 'app/components/signup/signupView.html',
+	      controller: 'SignupController'
+	   })
 	   //  .state('account.expenses', {
 	   //    url: '/expenses',
 	   //    templateUrl: 'components/expense/expenseView.html',
