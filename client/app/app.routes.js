@@ -10,7 +10,7 @@
 		.config(configUiRoute)
 
 	function configUiRoute($stateProvider, $urlRouterProvider) {
-	  // $urlRouterProvider.otherwise('account');
+	  $urlRouterProvider.otherwise('home');
 	  //
 	  // Now set up the states
 	  $stateProvider
@@ -19,11 +19,15 @@
 	   //    templateUrl: 'components/auth/loginView.html',
 	   //    controller: 'loginController'
 	   //  })
-	  	// .state('account', {
-	   //    url: '/account/{accountId}',
-	   //    templateUrl: 'components/account/accountView.html',
-	   //    controller: 'accountController'
-	   //  })
+		.state('home', {
+	      url: '/home/',
+	      template: 'Hello World !'
+	    })
+	  	.state('optPeriod', {
+	      url: '/operation/period/',
+	      templateUrl: 'app/components/operation/period/periodView.html',
+	      controller: 'periodController'
+	    })
 	   //  .state('account.expenses', {
 	   //    url: '/expenses',
 	   //    templateUrl: 'components/expense/expenseView.html',
