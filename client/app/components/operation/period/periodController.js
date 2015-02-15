@@ -5,10 +5,10 @@
 
 
 	var intervalType = [
-				{type:"day", value:1, code:'d'},
-				{type:"week", value:7, code:'w'},
-				{type:"month", value:30, code:'M'},
-				{type:"year", value:365, code:'Y'}
+				{type:'day', value:1, code:'d'},
+				{type:'week', value:7, code:'w'},
+				{type:'month', value:30, code:'M'},
+				{type:'year', value:365, code:'Y'}
 			]
 
 	function findInterval(value){
@@ -102,17 +102,17 @@
 
 				// Set the first operation
 				projection.push({
-						date: date.clone().toDate(),
-						amount: period.amount
-					})
-				if(period.nbRepeat == -1){
+					date: date.clone().toDate(),
+					amount: period.amount
+				})
+				if(period.nbRepeat === -1){
 					// If the operation is infinite show the first 12 operation
 					for(var i = 0; i<12; i++){
-					projection.push({
-						date: date.add(1*period.step, period.intervalType).clone().toDate(),
-						amount: period.amount
-					})
-				}
+						projection.push({
+							date: date.add(1*period.step, period.intervalType).clone().toDate(),
+							amount: period.amount
+						})
+					}
 				}else{
 
 					for(var i = 0; i<period.nbRepeat; i++){
@@ -123,9 +123,9 @@
 						projection.push(proj)
 					}
 				}
-			}
 
-			$scope.projection = projection
+				$scope.projection = projection
+			}
 		}
 
 		$scope.getLinkedOperation = function(){
@@ -136,7 +136,7 @@
 			var begin = moment($scope.periodTmp.dateBegin)	
 			var end = moment($scope.periodTmp.dateEnd)
 			if(end.isBefore(begin)){
-				//error
+				// error
 			}else{
 				var diff = end.diff(begin, 'days')
 				var repeat = Math.round(diff / $scope.periodTmp.intervalType.value)
@@ -178,11 +178,9 @@
 
 		function resetAddForm(){
 			$scope.periodTmp = {
-				name: "Test",
+				name: 'Test',
 				dateBegin: new Date(2015, 1, 13),
 				dateEnd: new Date(2015, 5, 13),
-				// dateBegin: "13/02/2015",
-				// dateEnd: "13/06/2015",
 				nbRepeat: 4,
 				step: 1,
 				intervalType: intervalType[2],
@@ -208,9 +206,10 @@
 			var tmp = jQuery.extend(true, {}, $scope.periodTmp);
 			tmp.intervalType = tmp.intervalType.code
 			$scope.isAdding = false
-			periodService.add(tmp)
 			resetAddForm()
-			refresh()
+			periodService.add(tmp).$promise.then(function(){
+				refresh()
+			})
 		}		
 
 		$scope.addCancel = function(){
@@ -224,12 +223,12 @@
 		}
 
 		function refresh(){
-			console.log(periodService.getAll())
+			// console.log(periodService.getAll())
 			periodService.getAll().$promise.then(function(periods){
-				console.log(periods)
+				// console.log(periods)
 				$.each(periods, function(k, period){
 					periods[k].dateEnd = computeEndDate(period.dateBegin, period.nbRepeat, period.intervalType)
-					console.log(period)
+					// console.log(period)
 				})
 				$scope.periods = periods
 			})

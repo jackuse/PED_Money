@@ -13,10 +13,10 @@ module.exports = function (app, periodModel) {
 
 		periodModel.find(/*{user: userId},*/ function (err, coll) {
 			if (!err) {
-				return resp.send(coll);
+				return resp.send(coll)
 			} else {
-				console.log(err);
-				next(err);
+				console.log(err)
+				next(err)
 			}
 		});
 	}
@@ -29,10 +29,10 @@ module.exports = function (app, periodModel) {
 
 		periodModel.findOne({_id: periodId}, function (err, coll) {
 			if (!err) {
-				return resp.send(coll);
+				return resp.send(coll)
 			} else {
-				console.log(err);
-				next(err);
+				console.log(err)
+				next(err)
 			}
 		});
 
@@ -46,8 +46,8 @@ module.exports = function (app, periodModel) {
 		// console.log(period)
 		var newPeriod = new periodModel(period);
 		newPeriod.save(function(e, results){
-			if (e) return next(e);
-			res.send(results);
+			if (e) return next(e)
+			res.send(results)
 		})
 	}
 
@@ -57,8 +57,8 @@ module.exports = function (app, periodModel) {
 		var periodId = req.params.id;
 
 		periodModel.remove({_id: periodId},function (err, results) {
-			if (err) return next(err);
-			res.sendStatus(204);
+			if (err) return next(err)
+			res.sendStatus(204)
 		})
 	}
 }

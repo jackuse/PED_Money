@@ -15,8 +15,8 @@
 
 		var p1 = {
 			_id: 2,
-			name: "Loyer",
-			dateBegin: "2015-01-15",
+			name: 'Loyer',
+			dateBegin: '2015-01-15',
 			nbRepeat: -1,
 			step: 3,
 			intervalType: 'M',
@@ -25,7 +25,7 @@
 
 		var p2 = {
 				_id: 1,
-				name: "Zebulon",
+				name: 'Zebulon',
 				dateBegin: new Date(2015, 1, 13),
 				nbRepeat: 4,
 				step: 1,
@@ -35,7 +35,7 @@
 
 		var p3 = {
 			_id: 3,
-			name: "Essence",
+			name: 'Essence',
 			dateBegin:  new Date(2015, 1, 2),
 			nbRepeat: -1,
 			step: 1,
@@ -54,7 +54,7 @@
 				return periodsRes.getAll()
 			},
 			add: function(operation){
-				periodsRes.add(operation)
+				return periodsRes.add(operation)
 			},
 			remove: function(periodId){
 				return periodsRes.delete({id : periodId})

@@ -11,34 +11,31 @@
 
 		var p1 = {
 			_id: 2,
-			name: "Loyer",
-			dateBegin: "2015-01-15",
-			dateEnd: undefined,
+			name: 'Loyer',
+			dateBegin: '2015-01-15',
 			nbRepeat: -1,
 			step: 3,
-			intervalType: 30,
+			intervalType: 'M',
 			amount: 300
 		}
 
 		var p2 = {
 				_id: 1,
-				name: "Zebulon",
+				name: 'Zebulon',
 				dateBegin: new Date(2015, 1, 13),
-				dateEnd: new Date(2015, 5, 13),
 				nbRepeat: 4,
 				step: 1,
-				intervalType: 30,
+				intervalType: 'M',
 				amount: 52
 			}
 
 		var p3 = {
 			_id: 3,
-			name: "Essence",
+			name: 'Essence',
 			dateBegin:  new Date(2015, 1, 2),
-			dateEnd: undefined,
 			nbRepeat: -1,
 			step: 1,
-			intervalType: 7,
+			intervalType: 'w',
 			amount: 20
 		}
 

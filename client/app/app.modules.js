@@ -1,3 +1,4 @@
+/*jshint -W079 */
 var Promise = Promise || ES6Promise.Promise;
 
 (function() {

@@ -10,7 +10,7 @@
 		.config(configUiRoute)
 
 	function configUiRoute($stateProvider, $urlRouterProvider) {
-	  $urlRouterProvider.otherwise('home');
+	  $urlRouterProvider.otherwise('home')
 	  //
 	  // Now set up the states
 	  $stateProvider
