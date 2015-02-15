@@ -22,10 +22,9 @@
 			<div class="navbar-header">
 				<a class="navbar-brand" href="" ui-sref="account">MyMoney</a>
 			</div>
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="" ui-sref="login">login</a>
-			</div>
+		<div ng-include src="'/app/shared/navbar/navbar.html'">
+		</div>
+		<!--/.nav-collapse -->
 
 <!-- 			<p class="navbar-text navbar-right">
 				<a type="button" ng-click="sync()" class="btn btn-mini btn-warning" role="button">Re-Sync</a>
@@ -78,13 +77,14 @@
 	<script src="assets/libs/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 	<!-- <script src="lib/ngtoast/dist/ngToast.min.js"></script> -->
 	<!-- <script src="lib/ngDialog/js/ngDialog.min.js"></script> -->
-	
+	<script src="assets/libs/ngStorage.min.js"></script>
 
 	<!-- Data plugins -->
 	<!-- <script src="assets/js/FileSaver.min.js"></script> -->
 	<script src="assets/js/lawnchair-0.6.1.min.js"></script>
 	<script src="assets/js/lawnchair-query-0.6.1.js"></script>
 	<!-- <script src="assets/js/lawnchair-aggregation.js"></script> -->
+	<script src="assets/libs/angular-local-storage/dist/angular-local-storage.min.js"></script>
 
 	
 	
@@ -113,7 +113,9 @@
 	<!-- <script src="directives.js"></script> -->
 	<!-- <script src="js/showErrors.js"></script> -->
 	<script src="app/components/login/loginController.js"></script>
+	<script src="app/components/login/loginService.js"></script>
 	<script src="app/components/signup/signupController.js"></script>
 	<script src="app/components/signup/signupService.js"></script>
+	<script src="app/shared/navbar/navbarController.js"></script>
 
 </html>

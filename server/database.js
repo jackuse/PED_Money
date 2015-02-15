@@ -42,7 +42,8 @@ var UserSchema  = new Schema({
 	lastName: String,
 	firstName: String,
 	email: String,
-	password: String
+	password: String,
+	token: String
 })
 
 console.log('init db end')

@@ -1,0 +1,7 @@
+<div ng-controller="NavbarController"class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li ng-hide="currentUserSignedIn"><a ui-sref="login">login</a></li>
+                    <li ng-hide="currentUserSignedIn"><a ui-sref="signup">Signup</a></li>
+                    <li ng-show="currentUserSignedIn"><a style="cursor: hand;cursor: pointer;" ng-click="logout()">Logout</a></li>
+                </ul>
+ </div>

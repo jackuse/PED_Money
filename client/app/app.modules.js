@@ -9,6 +9,9 @@ var Promise = Promise || ES6Promise.Promise;
 	angular
 		.module('appModule', [
 			'ui.router',
+			'ngResource',
+			'ngStorage',
+			'LocalStorageModule',
 			// 'ngDialog',
 			// 'ccDirectives',
 			// 'ccControllers',
