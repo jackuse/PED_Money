@@ -2,6 +2,7 @@
 var application_root = __dirname,
 	express = require('express'), //Web framework
 	path = require('path'), //Utilities for dealing with file paths
+	jwt  = require("jsonwebtoken"),
 	bodyParser  = require('body-parser');
 
 var database = require('./database')
@@ -18,6 +19,7 @@ var app = express();
 // Configure server
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.logger('dev'));
 app.use(express.static(path.join(application_root ,'../client')));
 //Show all errors in development
 //app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));*
@@ -46,7 +48,7 @@ db.once('open', function (callback) {
 
 
 
-apiUser(app, userModel)
+apiUser(app, userModel , jwt)
 // apiExpense(app, expenseModel)
 // apiTools(app, userModel, expenseModel)
 // apiOther(app, userModel, expenseModel)
