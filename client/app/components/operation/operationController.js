@@ -31,13 +31,33 @@
             }
 
 
-            //OperationResource.add(op1);
-            //OperationResource.add(op2);
+            OperationResource.add(op1)
+            OperationResource.add(op2)
 
-            OperationResource.getAll().$promise.then(function(operations){
-                console.log(operations)
-                $scope.operations = operations
-            })
+            var getOperations = function() {
+                OperationResource.getAll().$promise.then(function(operations){
+                    $scope.operations = operations
+
+                    $scope.solde = 0
+
+                    for(var i = 0; i < operations.length; i++) {
+                        $scope.solde += operations[i].value
+                    }
+
+                    console.log($scope.solde)
+                })
+            }
+
+            getOperations()
+            
+
+
+            $scope.deleteOperation = function(idOperation) {
+                OperationResource.remove(idOperation).$promise.then(function(){
+                    console.log("Delete success")
+                    getOperations()
+                })
+            }
 
 
         }]);

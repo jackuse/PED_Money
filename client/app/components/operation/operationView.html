@@ -1,17 +1,29 @@
 
 <div class="container">
 
+    <div class="mb20">
+        <strong>Solde : </strong>
+
+        <span ng-if="solde <= 0" class="colorRed">
+            {{ solde }}
+        </span>
+        <span ng-if="solde > 0" class="colorGreen">
+            +{{ solde }}
+        </span>
+    </div>
+
     <table ng-if="operations.length > 0" class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Valeur</th>
-                <th>Operation</th>
-                <th>Tiers</th>
-                <th>Type</th>
-                <th>Débit</th>
-                <th>Crédit</th>
-                <th>Validé</th>
+                <th class="algcenter">Date</th>
+                <th class="algcenter">Valeur</th>
+                <th class="algcenter">Operation</th>
+                <th class="algcenter">Tiers</th>
+                <th class="algcenter">Type</th>
+                <th class="algcenter">Débit</th>
+                <th class="algcenter">Crédit</th>
+                <th class="algcenter">Validé</th>
+                <th class="algcenter">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -34,6 +46,11 @@
                 <td class="algcenter">
                     <input ng-if="op.checked" type="checkbox" checked>
                     <input ng-if="!op.checked" type="checkbox">
+                </td>
+                <td class="algcenter">
+                    <button ng-click="deleteOperation(op._id)" class="btn btn-danger btn-xs">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </button>
                 </td>
             </tr>
         </tbody>
