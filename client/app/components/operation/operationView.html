@@ -2,14 +2,25 @@
 <div class="container">
 
     <div class="mb20">
+        <input datepicker type="text" ng-model="operationCreateModel.dateOperation" class="form-control mb10 wid170 ftl mr10" placeholder="Date de l'opération">
+        <input datepicker type="text" ng-model="operationCreateModel.datePrelevement" class="form-control mb10 wid170 ftl mr10" placeholder="Date du prélèvement">
+        <input type="text" ng-model="operationCreateModel.description" class="form-control mb10 wid200 ftl mr10" placeholder="Description">
+        <input type="text" ng-model="operationCreateModel.thirdParty" class="form-control mb10 wid150 ftl mr10" placeholder="Tiers">
+        <input type="text" ng-model="operationCreateModel.type" class="form-control mb10 wid150 ftl mr10" placeholder="Type">
+        <input type="text" ng-model="operationCreateModel.value" class="form-control mb10 wid100 ftl mr10" placeholder="Montant">
+        <button ng-click="addOperation()" class="btn btn-default">Ajouter</button>
+    </div>
+
+    <div ng-if="operations.length > 0" class="mb20">
         <strong>Solde : </strong>
 
         <span ng-if="solde <= 0" class="colorRed">
-            {{ solde }}
+            {{ solde }}€
         </span>
         <span ng-if="solde > 0" class="colorGreen">
-            +{{ solde }}
+            +{{ solde }}€
         </span>
+
     </div>
 
     <table ng-if="operations.length > 0" class="table table-bordered table-striped">
