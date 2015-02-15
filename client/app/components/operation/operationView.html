@@ -1,24 +1,44 @@
 
 <div class="container">
 
-    <div ng-repeat="op in operations" class="operation">
+    <table ng-if="operations.length > 0" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Valeur</th>
+                <th>Operation</th>
+                <th>Tiers</th>
+                <th>Type</th>
+                <th>Débit</th>
+                <th>Crédit</th>
+                <th>Validé</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="op in operations">
+                <td>{{ op.dateOperation }}</td>
+                <td>{{ op.datePrelevement }}</td>
+                <td>{{ op.description }}</td>
+                <td>{{ op.thirdParty }}</td>
+                <td>{{ op.type }}</td>
+                <td>
+                    <span ng-if="op.value < 0" class="colorRed">
+                        {{ op.value }}
+                    </span>
+                </td>
+                <td>
+                    <span ng-if="op.value > 0" class="colorGreen">
+                        +{{ op.value }}
+                    </span>
+                </td>
+                <td class="algcenter">
+                    <input ng-if="op.checked" type="checkbox" checked>
+                    <input ng-if="!op.checked" type="checkbox">
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
-        {{ op.dateOperation }} --
-        {{ op.datePrelevement }} -- 
-        {{ op.description }} -- 
-        {{ op.thirdParty }} -- 
-        {{ op.type }} --
-        <span ng-if="op.value < 0" class="colorRed">
-            {{ op.value }}
-        </span>
-
-        <span ng-if="op.value > 0" class="colorGreen">
-            {{ op.value }}
-        </span>
-
-        -- Est validé 
-        <input ng-if="op.checked" type="checkbox" checked>
-        <input ng-if="!op.checked" type="checkbox">
-    </div>
+    <span ng-if="operations.length <= 0">Il n'y a encore aucunes opérations sur ce compte.</span>
 
 </div>
