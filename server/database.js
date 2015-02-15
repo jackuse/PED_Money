@@ -1,6 +1,9 @@
 module.exports = {
     getDB : function(){
         return db
+    },
+    getOperationModel: function(){
+        return operationModel
     }
     // getUserModel: function(){
     //  return userModel
@@ -43,9 +46,11 @@ var OperationSchema = new Schema({
     description: String,
     type: String,
     checked: Boolean,
-    dateOperation: Date,
-    datePrelevement: Date,
-    categoryId: Number/*,
+    /*dateOperation: Date,
+    datePrelevement: Date,*/
+    dateOperation: String,
+    datePrelevement: String,
+    categoryId: String/*,
     subOperations: []*/
 })
 
