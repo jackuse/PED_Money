@@ -3,87 +3,20 @@
 	'use strict';
 
 
+	angular.module('controllers')
+	.controller('periodController', ['$scope', 'periodService', periodController])
 
-	var intervalType = [
+
+	function periodController($scope, periodService){
+
+		// TODO Put in shared place
+		var intervalType = [
 				{type:'day', value:1, code:'d'},
 				{type:'week', value:7, code:'w'},
 				{type:'month', value:30, code:'M'},
 				{type:'year', value:365, code:'Y'}
 			]
-
-	function findInterval(value){
-		var result
-		$.each(intervalType, function(k,type){
-			if(type.value === value){
-				result = type
-			}
-		})
-		return result
-	}
-
-	function findIntervalByCode(code){
-		var result
-		$.each(intervalType, function(k,type){
-			if(type.code === code){
-				result = type
-			}
-		})
-		return result
-	}
-
-	angular.module('controllers')
-	.filter('date2', ['$filter', function($filter){
-		return function(input, format, timezone) {
-			input = $filter('date')(input, format, timezone)
-			input = input || 'Infinite';
-			return input
-		}
-	}])
-	.filter('repeat', function(){
-		return function(input) {
-			input = input || 'Unknown';
-			input = input < 0 ? 'Infinite' : input;
-			return input
-		}
-	})
-	.filter('period', function(){
-		return function(input) {
-			var result = findIntervalByCode(input).type
-			result = result || 'Unknown';
-			return result
-		}
-	})
-	.directive('datepicker', function(dateFilter) {
-	    return {
-	        restrict: 'A',
-	        require : 'ngModel',
-	        link : function (scope, element, attrs, ngModelCtrl) {
-	            $(function(){
-	            	// ngModelCtrl.$formatters.unshift(function (modelValue) {
-              //       	return dateFilter(modelValue, 'yyyy-MM-dd');
-	             //    });
-
-	             //    ngModelCtrl.$parsers.unshift(function(viewValue) {
-	             //        return new Date(viewValue);
-	             //    });
-	                element.datepicker({
-	                    dateFormat:'dd/mm/yy',
-	                    onSelect:function (date) {
-	                        scope.$apply(function () {
-	                            ngModelCtrl.$setViewValue(date);
-	                        });
-	                    }
-	                });
-	            });
-	        }
-	    }
-	})
-	.controller('periodController', ['$scope', 'periodService', '$filter', function($scope, periodService, $filter){
-
-
 		$scope.intervalType = intervalType
-
-		// periodService.init()
 
 
 		/**
@@ -128,10 +61,19 @@
 			}
 		}
 
-		$scope.getLinkedOperation = function(){
+		/**
+		 * @Description
+		 * Search the real operation made from the period operation
+		 * @Param {Object} The period operation from to find
+		 */
+		$scope.getLinkedOperation = function(period){
 			// TODO
 		}
 
+		/**
+		 * @Description
+		 * Compute the repeat value from the end date
+		 */
 		$scope.computeRepeatDate = function(){
 			var begin = moment($scope.periodTmp.dateBegin)	
 			var end = moment($scope.periodTmp.dateEnd)
@@ -144,7 +86,10 @@
 			}
 		}
 
-
+		/**
+		 * @Description
+		 * Manage click on the infinite checkbox 
+		 */
 		$scope.setInfinite = function(){
 			if($scope.periodTmp.isInifinite){
 				$scope.periodTmp.nbRepeat = -1
@@ -156,7 +101,10 @@
 			}
 		}
 
-
+		/**
+		 * @Description
+		 * Compute the end date from the repeat value
+		 */
 		$scope.computeDateRepeat = function(){
 			
 
@@ -172,10 +120,22 @@
 			$scope.periodTmp.dateEnd = end.toDate()
 		}
 
+		/**
+		 * @Description
+		 * Compute the end date from the repeat value
+		 * @Param {Date} The begin date
+		 * @Param {Number} The number of repeat
+		 * @Param {String} The type of interval
+		 * @Return {Date} The date of the end of the periodic operation
+		 */
 		function computeEndDate(dateBegin, nbRepeat, intervalType){
 			return moment(dateBegin).add(nbRepeat, intervalType).toDate()
 		}
 
+		/**
+		 * @Description
+		 * Reset the form of adding
+		 */
 		function resetAddForm(){
 			$scope.periodTmp = {
 				name: 'Test',
@@ -237,6 +197,6 @@
 
 		resetAddForm()
 		refresh()
-	}])
+	}
 
 })();
