@@ -1,7 +1,7 @@
  module.exports = function (app, userModel,jwt) {
 app.post('/api/user', addUser)
 app.post('/api/authenticate', authenticate)
-/*app.get('/api/expense/:id', getExpense)
+/*app.get('/api/compte',compte)
 app.put('/api/expense/', getExpenseByTag)
 app.delete('/api/expense/:id', deleteExpense)
 app.post('/api/expense/:id', editExpense)*/
@@ -48,7 +48,7 @@ function addUser(req, res , next) {
 	}
 
 function authenticate(req, res , next) {
-	console.log(req.body);
+	//console.log(req.body);
 
 	userModel.findOne({username: req.body.username, password: req.body.password}, function(err, user) {
         if (err) {
@@ -73,8 +73,6 @@ function authenticate(req, res , next) {
         }
 
     });
-      console.log(res.data);
 }
-
 
 }

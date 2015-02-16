@@ -7,25 +7,32 @@
 
 	angular
 		.module('appModule')
-		.config(configUiRoute)
-
-	function configUiRoute($stateProvider, $urlRouterProvider) {
+		.config(['$stateProvider','$urlRouterProvider',function($stateProvider, $urlRouterProvider) {
 	 $urlRouterProvider.otherwise('/login');
 	  // Now set up the states
 	  $stateProvider
 	  	.state('login', {
 	      url: '/login',
 	       templateUrl: 'app/components/login/loginView.html',
-	 	   controller: 'LoginController'
+	 	   controller: 'LoginController',
+       data: {
+        requireLogin: false
+      }
 	     })
 	  	 .state('signup', {
 	      url: '/signup',
 	     templateUrl: 'app/components/signup/signupView.html',
-	      controller: 'SignupController'
+	      controller: 'SignupController',
+        data: {
+        requireLogin: false
+      }
 	   }).state('compte', {
 	      url: '/compte',
-	     templateUrl: 'app/components/compte/compte.html'
-	   })
+	     templateUrl: 'app/components/compte/compte.html',
+        data: {
+        requireLogin: true
+      }
+	   });
 	   //  .state('account.expenses', {
 	   //    url: '/expenses',
 	   //    templateUrl: 'components/expense/expenseView.html',
@@ -43,22 +50,16 @@
 	   //    templateUrl: 'components/settings/settingsView.html',
 	   //    controller: 'settingsController'
 	   //  })
-	}
-		/*$httpProvider.interceptors.push(['$q', '$location', '$localStorage', function($q, $location, $localStorage) {
-            return {
-                'request': function (config) {
-                    config.headers = config.headers || {};
-                    if ($localStorage.token) {
-                        config.headers.Authorization = 'Bearer ' + $localStorage.token;
-                    }
-                    return config;
-                },
-                'responseError': function(response) {
-                    if(response.status === 401 || response.status === 403) {
-                        $location.path('/signin');
-                    }
-                    return $q.reject(response);
-                }
-            };
-        }]);*/
+		
+}])
+.run(function ($rootScope,$state) {
+
+  $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
+    var requireLogin = toState.data.requireLogin;
+    if (requireLogin && $rootScope.currentUserSignedIn==null) {
+      event.preventDefault();
+     $state.go('login');
+    }
+  });
+});
 })();
