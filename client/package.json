@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "MyMoneyClient web app",
   "dependencies": {
+    "angular-local-storage": "^0.1.5"
   },
   "devDependencies": {
     "bower": "*"
