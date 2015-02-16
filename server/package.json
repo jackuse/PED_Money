@@ -5,7 +5,8 @@
   "dependencies": {
     "body-parser": "*",
     "express": "*",
-    "mongoose": "*"
+    "mongoose": "*",
+    "jsonwebtoken": "0.4.0"
   },
   "devDependencies": {
   },
