@@ -8,21 +8,11 @@ var Promise = Promise || ES6Promise.Promise;
 	angular.module('services', ['ngResource'])
 
 	angular.module('controllers', ['currencyFilter', 'services', 'filters'])
-	// angular.module('controllers', [])
-
-	angular.module('services', ['ngResource'])
-	angular.module('controllers', ['services'])
 
 	angular
 		.module('appModule', [
 			'ui.router',
 			'controllers'
-
-			
-			// 'ngDialog',
-			// 'ccDirectives',
-			'controllers'
-			// 'ccServices'
 		])
 
 })();
