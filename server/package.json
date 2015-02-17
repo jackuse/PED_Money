@@ -8,8 +8,7 @@
     "mongoose": "*",
     "jsonwebtoken": "0.4.0"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "scripts": {
     "test": "node_modules/.bin/mocha -w",
     "db": "mongod --dbpath ./db",

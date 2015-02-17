@@ -1,13 +1,16 @@
 module.exports = {
-	getDB : function(){
-		return db
-	},
-	 getUserModel: function(){
+    getDB : function(){
+        return db
+    },
+    getOperationModel: function(){
+        return operationModel
+    },
+    getPeriodModel: function(){
+        return periodModel
+    },
+    getUserModel: function(){
 	 	return userModel
 	}
-	// getExpenseModel: function(){
-	// 	return expenseModel
-	// }
 }
 
 
@@ -21,19 +24,14 @@ var db = mongoose.connection;
 //Schemas
 var Schema = mongoose.Schema;
 
-
-
-var ExpenseSchema = new Schema({
-	title: String,
+var PeriodSchema = new Schema({
+	name: String,
 	amount: Number,
-	// from:[FriendLinkSchema],
-	// to:[FriendLinkTrackSchema],
-	date: Date,
-	tags: [
-		String
-	],
-	isEdit: Boolean,
-	user: String
+	dateBegin: Date,
+	nbRepeat: Number,
+	step: Number,
+	accountId: String,
+	intervalType: String
 })
 
 var UserSchema  = new Schema({
@@ -46,11 +44,22 @@ var UserSchema  = new Schema({
 	token: String
 })
 
-console.log('init db end')
+var OperationSchema = new Schema({
+    value: Number,
+    thirdParty: String,
+    description: String,
+    type: String,
+    checked: Boolean,
+    /*dateOperation: Date,
+    datePrelevement: Date,*/
+    dateOperation: String,
+    datePrelevement: String,
+    categoryId: String/*,
+    subOperations: []*/
+})
 
-// ExpenseSchema.index( { user: 1 } )
 
 //Models
-
 var userModel = mongoose.model('userModel', UserSchema);
-// var expenseModel = mongoose.model('expenseModel', ExpenseSchema);
+var operationModel = mongoose.model('operationModel', OperationSchema);
+var periodModel = mongoose.model('periodModel', PeriodSchema);

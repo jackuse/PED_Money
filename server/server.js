@@ -7,6 +7,8 @@ var application_root = __dirname,
 
 var database = require('./database')
 var apiUser = require('./api-user')
+var apiOperation = require('./api-operation')
+var apiPeriod = require('./api-period')
 // var apiTools = require('./api-tools')
 // var apiOther = require('./api-other')
 // var api = require('./api')
@@ -42,12 +44,37 @@ db.once('open', function (callback) {
 
 
 
- var userModel = database.getUserModel()
-// var expenseModel = database.getExpenseModel()
-
-
+var userModel = database.getUserModel()
 
 apiUser(app, userModel , jwt)
-// apiExpense(app, expenseModel)
-// apiTools(app, userModel, expenseModel)
-// apiOther(app, userModel, expenseModel)
+apiOperation(app, database.getOperationModel())
+apiPeriod(app, database.getPeriodModel())
+
+
+
+
+// Example
+
+// module.exports = function (app, expenseModel) {
+// 	app.get('/api/expense/', getAllExpenses)
+// 	app.post('/api/expense/', addExpense)
+// 	app.get('/api/expense/:id', getExpense)
+// 	app.put('/api/expense/', getExpenseByTag)
+// 	app.delete('/api/expense/:id', deleteExpense)
+// 	app.post('/api/expense/:id', editExpense)
+
+
+// 	function getAllExpenses(req, resp , next) {
+// 		'use strict';
+// 		var userId = req.get('X-User-Id');
+
+// 		expenseModel.find({user: userId}, function (err, coll) {
+// 			if (!err) {
+// 				return resp.send(coll);
+// 			} else {
+// 				console.log(err);
+// 				next(err);
+// 			}
+// 		});
+// 	}
+// }
