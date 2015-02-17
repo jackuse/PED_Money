@@ -1,7 +1,145 @@
 <!-- periodeView.html -->
 
+<style>
+    /* === ALL === */ 
+
+.hideit {display:none;}
+
+.marginTop {margin-top:20px;}
+.marginNull {margin:0px;}
+
+.mg0 {margin:0px;}
+
+.mt10 {margin-top:10px;}
+.mt20 {margin-top:20px;}
+.mt30 {margin-top:30px;}
+.mt40 {margin-top:40px;}
+.mt50 {margin-top:50px;}
+.mt60 {margin-top:60px;}
+.mt70 {margin-top:70px;}
+
+.mb10 {margin-bottom:10px;}
+.mb20 {margin-bottom:20px;}
+.mb30 {margin-bottom:30px;}
+.mb40 {margin-bottom:40px;}
+.mb50 {margin-bottom:50px;}
+
+.ml10 {margin-left:10px;}
+.ml20 {margin-left:20px;}
+.ml30 {margin-left:30px;}
+.ml40 {margin-left:40px;}
+.ml50 {margin-left:50px;}
+.ml60 {margin-left:60px;}
+
+.mr5  {margin-right:5px;}
+.mr10 {margin-right:10px;}
+.mr20 {margin-right:20px;}
+.mr30 {margin-right:30px;}
+.mr40 {margin-right:40px;}
+
+.pt0  {padding-top:0px;}
+.pt55 {padding-top:55px;}
+
+.pb0 {padding-bottom:0px;}
+.pb55 {padding-bottom: 55px;}
+
+.pad10 {padding:10px;}
+
+.ftl {float:left;}
+.ftr {float:right;}
+
+.algcenter {text-align: center;}
+.algright {text-align: right;}
+.algleft {text-align: left;}
+.algjust {text-align: justify;}
+
+.ht55 {height:55px;}
+
+.wid50 {width:50px;}
+.wid80 {width:80px;}
+.wid100 {width:100px;}
+.wid150 {width:150px;}
+.wid170 {width:170px;}
+.wid200 {width:200px;}
+.wid300 {width:300px;}
+.wid400 {width:400px;}
+.wid400 {width:400px;}
+.wid500 {width:500px;}
+.wid600 {width:600px;}
+
+.fs10 {font-size:10px;}
+.fs12 {font-size:12px;}
+.fs14 {font-size:14px;}
+.fs16 {font-size:16px;}
+.fs18 {font-size:18px;}
+.fs20 {font-size:20px;}
+
+.nostyle {text-decoration: none; color:black;}
+.nostyle:hover {color:black;}
+
+.pointer {cursor:pointer;}
+
+.colorRed {color: red;}
+.colorGreen {color: green;}
+
+</style>
+
 
 <div class="container">
+
+     <form name="periodForm" class="row" ng-submit="submitForm(periodForm.$valid)" >
+        <div class="form-group ftl" ng-class="{ 'has-error' : periodForm.name.$invalid && !periodForm.name.$pristine }">
+            <label>Name</label>
+            <input type="text" name="name" class="form-control mb10 wid170 mr10"  ng-model="periodTmp.name" ng-minlength="3" ng-maxlength="50"required>
+            <p ng-show="periodForm.name.$invalid && !periodForm.name.$pristine" class="help-block">A name is required.</p>
+            <p ng-show="periodForm.name.$error.minlength" class="help-block">Name is too short.</p>
+            <p ng-show="periodForm.name.$error.maxlength" class="help-block">Name is too long.</p>
+            <!-- <p class=""> invalid :{{periodForm.name.$invalid}} pristine: {{!periodForm.name.$pristine}}</p> -->
+        </div>
+        <div class="form-group ftl" ng-class="{ 'has-error' : periodForm.dateBegin.$invalid && !periodForm.dateBegin.$pristine }">
+            <label>Date begin</label>
+            <input type="date" name="dateBegin" class="form-control mb10 wid150 mr10"  ng-model="periodTmp.dateBegin" date-before before="{{periodTmp.dateEnd}}" required>
+            <p ng-show="periodForm.dateBegin.$invalid && !periodForm.dateBegin.$pristine" class="help-block">Date begin is required.</p>
+            <p ng-show="periodForm.dateBegin.$error.date" class="help-block">Date begin must be before of date end.</p>
+            <p class=""> invalid: {{periodForm.dateBegin.$invalid}} 
+                pristine: {{!periodForm.dateBegin.$pristine}}
+                error: {{periodForm.dateBegin.$error}}
+            </p>
+        </div>
+        <div class="form-group ftl" ng-class="{ 'has-error' : periodForm.dateEnd.$invalid && !periodForm.dateEnd.$pristine }">
+            <label>Date end</label>
+            <input ng-change="computeRepeatDate()" type="date" name="dateEnd" class="form-control mb10 wid150 mr10"  ng-model="periodTmp.dateEnd" ng-disabled="periodTmp.isInifinite" required>
+            <p ng-show="periodForm.dateEnd.$invalid && !periodForm.dateEnd.$pristine && !periodTmp.isInifinite" class="help-block">Date end is required.</p>
+            <p ng-show="periodForm.errorDateEnd" class="help-block">Date end must be supperior of date begin.</p>
+        </div>
+        <div class="form-group ftl" ng-class="{ 'has-error' : periodForm.nbRepeat.$invalid && !periodForm.nbRepeat.$pristine }">
+            <label>Nb repeat</label>
+            <input ng-change="computeDateRepeat()" type="number" name="nbRepeat" class="form-control mb10 wid80 mr10"  ng-model="periodTmp.nbRepeat" ng-disabled="periodTmp.isInifinite" required> 
+            <p ng-show="periodForm.nbRepeat.$invalid && !periodForm.nbRepeat.$pristine" class="help-block">Nb repeat is required.</p>
+            <p class="ftl"><input ng-change="setInfinite()" type="checkbox" name="isInifinite" ng-model="periodTmp.isInifinite"> Infinite</p>
+        </div>
+        <div class="form-group ftl" ng-class="{ 'has-error' : periodForm.step.$invalid && !periodForm.step.$pristine }">
+            <label>Step</label>
+            <input type="number" class="form-control mb10 wid80 mr10" name="step" ng-model="periodTmp.step" required>
+            <p ng-show="periodForm.step.$invalid && !periodForm.step.$pristine" class="help-block">Step is required.</p>
+        </div>
+        <div class="form-group ftl" ng-class="{ 'has-error' : periodForm.intervalType.$invalid && !periodForm.intervalType.$pristine }">
+             <label>Period</label>
+            <select name="intervalType" class="form-control mb10 wid100 mr10" ng-model="periodTmp.intervalType" ng-options="interval as interval.type for interval in intervalType" required></select>
+            <p ng-show="periodForm.intervalType.$invalid && !periodForm.intervalType.$pristine" class="help-block">Period is required.</p>
+        </div>
+        <div class="form-group ftl" ng-class="{ 'has-error' : periodForm.amount.$invalid && !periodForm.amount.$pristine }">
+            <label>Amount</label>
+            <input type="number" name="amount" class="form-control mb10 wid100 mr10"  ng-model="periodTmp.amount" required>
+            <p ng-show="periodForm.amount.$invalid && !periodForm.amount.$pristine" class="help-block">Amount is required.</p>
+        </div>
+        <div class="form-group ftl">
+            <!-- <a ng-show="isAdding" type="button" ng-click="addValid()" class="btn btn-info" role="button">Ok</a> -->
+
+             <button type="submit" class="mt30 btn btn-primary" ng-disabled="periodForm.$invalid">Ok</button>
+        </div>
+    </form>
+
     <h2>Periodic operation</h2>
     <table class="table">
         <thead>
@@ -19,19 +157,26 @@
         </thead>
         <tbody>
 
-        <tr ng-show="isAdding">
-            <td><input type="text" class="form-control"  ng-model="periodTmp.name"></td>
-            <td><input type="date" class="form-control"  ng-model="periodTmp.dateBegin"></td>
-            <td><input ng-change="computeRepeatDate()" type="date" class="form-control"  ng-model="periodTmp.dateEnd" ng-disabled="periodTmp.isInifinite"></td>
-            <td><input ng-change="computeDateRepeat()" type="number" class="form-control"  ng-model="periodTmp.nbRepeat" ng-disabled="periodTmp.isInifinite"> 
-                <input ng-change="setInfinite()" type="checkbox" ng-model="periodTmp.isInifinite"> Infinite</td>
-            <td><input type="number" class="form-control" ng-model="periodTmp.step"></td>
-            <td><select class="form-control" ng-model="periodTmp.intervalType" ng-options="interval as interval.type for interval in intervalType"></select></td>
-            <td><input type="number" class="form-control"  ng-model="periodTmp.amount"></td>
-            <td>
-                <a ng-show="isAdding" type="button" ng-click="addValid()" class="btn btn-info" role="button">Ok</a>
-            </td>
+        <tr ng-show="isAdding"> 
 
+           
+<!--             <form name="periodForm" ng-submit="submitForm(periodForm.$valid)" >
+            <td class="form-group">
+                <input type="text" name="name" class="form-control"  ng-model="periodTmp.name" required>
+                <p ng-show="periodForm.name.$invalid && !periodForm.name.$pristine" class="help-block">A name is required.</p>
+                invalid :{{periodForm.name.$invalid}} pristine: {{!periodForm.name.$pristine}}
+            </td>
+            <td><input type="date" name="dateBegin" class="form-control"  ng-model="periodTmp.dateBegin" required></td>
+            <td><input ng-change="computeRepeatDate()" type="date" name="dateEnd" class="form-control"  ng-model="periodTmp.dateEnd" ng-disabled="periodTmp.isInifinite" required></td>
+            <td><input ng-change="computeDateRepeat()" type="number" name="nbRepeat" class="form-control"  ng-model="periodTmp.nbRepeat" ng-disabled="periodTmp.isInifinite" required> 
+                <input ng-change="setInfinite()" type="checkbox" name="isInifinite" ng-model="periodTmp.isInifinite"> Infinite</td>
+            <td><input type="number" class="form-control" name="step" ng-model="periodTmp.step" required></td>
+            <td><select name="intervalType" class="form-control" ng-model="periodTmp.intervalType" ng-options="interval as interval.type for interval in intervalType" required></select></td>
+            <td><input type="number" name="amount" class="form-control"  ng-model="periodTmp.amount" required></td>
+            <td>
+                 <button type="submit" class="btn btn-primary" ng-disabled="periodForm.$invalid">Ok</button>
+            </td>
+            </form> -->
 <!--             
             <td>{{periodTmp.name}}</td>
             <td>{{periodTmp.dateBegin | date}}</td>

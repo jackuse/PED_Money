@@ -5,6 +5,61 @@
 
 	angular.module('controllers')
 	.controller('periodController', ['$scope', 'periodService', periodController])
+	// .directive('blacklist', function (){ 
+	// 	return {
+	// 		require: 'ngModel',
+	// 		link: function(scope, elem, attr, ngModel) {
+	// 			var blacklist = attr.blacklist.split(',')
+
+	// 			//For DOM -> model validation
+	// 			ngModel.$parsers.unshift(function(value) {
+	// 				var valid = blacklist.indexOf(value) === -1
+	// 				ngModel.$setValidity('blacklist', valid)
+	// 				return valid ? value : undefined
+	// 			})
+
+	// 			//For model -> DOM validation
+	// 			ngModel.$formatters.unshift(function(value) {
+	// 				ngModel.$setValidity('blacklist', blacklist.indexOf(value) === -1)
+	// 				return value
+	// 			})
+	// 		}
+	// 	}
+	// })
+	.directive('dateBefore', function (){ 
+		return {
+			require: 'ngModel',
+			restrict: '',
+			link: function(scope, elem, attr, ctrl) {
+				var otherValue = attr.before
+				// alert(attr)
+				// console.log(attr)
+				// if(otherValue === undefined){
+				// 	alert('otherValue is undefined')
+				// }
+				// alert('dateBefore')
+				if (ctrl) {
+					ctrl.$validators.date = function(modelValue) {
+						// alert(modelValue+' / '+otherValue)
+						if(ctrl.$isEmpty(modelValue)){
+							return true
+						}
+						if(otherValue === undefined || modelValue === undefined ){
+							return false
+						}
+
+						if(moment(modelValue).isBefore(moment(otherValue))){
+							return true
+						}
+
+						return false
+
+						// return ctrl.$isEmpty(modelValue) || (otherValue !== undefined && moment(modelValue).before(moment(otherValue)))
+					}
+				}
+			}
+		}
+	})
 
 
 	function periodController($scope, periodService){
@@ -137,24 +192,24 @@
 		 * Reset the form of adding
 		 */
 		function resetAddForm(){
-			$scope.periodTmp = {
-				name: 'Test',
-				dateBegin: new Date(2015, 1, 13),
-				dateEnd: new Date(2015, 5, 13),
-				nbRepeat: 4,
-				step: 1,
-				intervalType: intervalType[2],
-				amount: 52
-			}
-			// 	$scope.periodTmp = {
-			// 		name: "",
-			// 		dateBegin: "",
-			// 		dateEnd: undefined,
-			// 		nbRepeat: undefined,
-			// 		step: 0,
-			// 		intervalType: "",
-			// 		amount: 0
-			// 	}
+			// $scope.periodTmp = {
+			// 	name: 'Test',
+			// 	dateBegin: new Date(2015, 1, 13),
+			// 	dateEnd: new Date(2015, 5, 13),
+			// 	nbRepeat: 4,
+			// 	step: 1,
+			// 	intervalType: intervalType[2],
+			// 	amount: 52
+			// }
+				$scope.periodTmp = {
+					name: "",
+					dateBegin: "",
+					dateEnd: undefined,
+					nbRepeat: undefined,
+					step: 0,
+					intervalType: "",
+					amount: 0
+				}
 		}
 
 		$scope.add = function(){
@@ -181,6 +236,16 @@
 			periodService.remove(period._id)
 			refresh()
 		}
+
+
+		$scope.submitForm = function(isValid) {
+
+            // check to make sure the form is completely valid
+            if (isValid) {
+                alert('our form is amazing');
+            }
+
+        };
 
 		function refresh(){
 			// console.log(periodService.getAll())
