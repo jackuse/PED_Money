@@ -10,8 +10,6 @@
     <link rel="stylesheet" href="assets/libs/bootstrap/dist/css/bootstrap-theme.min.css">
 
     <link rel="stylesheet" href="assets/libs/jquery-ui/themes/smoothness/jquery-ui.min.css">
-    <!-- <link rel="stylesheet" href="lib/angular-material/angular-material.css"> -->
-    
     <link rel="stylesheet" href="assets/css/style.css">
 
 
@@ -22,14 +20,12 @@
         <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand" href="" ui-sref="account">MyMoney</a>
-
-                
             </div>
-
 
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li><a class="" ui-sref="operation">Operations</a></li>
+                    <li><a class="" ui-sref="optPeriod">Operations périodiques</a></li>
                 </ul>
             </div>
 <!--            <p class="navbar-text navbar-right">
@@ -50,16 +46,10 @@
     </nav>
 
 
-
     <div ui-view></div>
-    <!-- <div ng-view></div> -->
-
-
-
 
     
 </body>
-
 
     <!-- Libs -->
     <script src="assets/libs/jquery/dist/jquery.min.js"></script>
@@ -85,11 +75,15 @@
     <!-- <script src="lib/ngDialog/js/ngDialog.min.js"></script> -->
     
 
-    <!-- Data plugins -->
-    <!-- <script src="assets/js/FileSaver.min.js"></script> -->
-    <script src="assets/js/lawnchair-0.6.1.min.js"></script>
-    <script src="assets/js/lawnchair-query-0.6.1.js"></script>
-    <!-- <script src="assets/js/lawnchair-aggregation.js"></script> -->
+    <!-- View plugins -->
+    <script src="assets/libs/angular-bootstrap/ui-bootstrap.min.js"></script>
+    <script src="assets/libs/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="assets/libs/angular-currency-filter/dist/currency-filter.min.js"></script>
+    <script src="assets/libs/moment/min/moment.min.js"></script>
+    <!-- <script src="assets/libs/moment/min/moment.min.js"></script>  -->
+
+    <!-- <script src="lib/ngtoast/dist/ngToast.min.js"></script> -->
+    <!-- <script src="lib/ngDialog/js/ngDialog.min.js"></script> -->
 
     
     
@@ -120,8 +114,12 @@
     <script src="app/components/operation/operationService.js"></script>
     <script src="app/components/operation/operationDirective.js"></script>
 
+    <script src="app/shared/filters.js"></script>
+    <script src="app/shared/datePickerDirective.js"></script>
+    <script src="app/components/operation/period/periodService-db.js"></script>
+    <script src="app/components/operation/period/periodController.js"></script>
+
     <!-- <script src="directives.js"></script> -->
     <!-- <script src="js/showErrors.js"></script> -->
-
 
 </html>

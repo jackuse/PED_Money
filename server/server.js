@@ -6,6 +6,7 @@ var application_root = __dirname,
 
 var database = require('./database')
 var apiOperation = require('./api-operation')
+var apiPeriod = require('./api-period')
 // var apiExpense = require('./api-expense')
 // var apiTools = require('./api-tools')
 // var apiOther = require('./api-other')
@@ -52,6 +53,7 @@ db.once('open', function (callback) {
 // apiTools(app, userModel, expenseModel)
 // apiOther(app, userModel, expenseModel)
 apiOperation(app, database.getOperationModel())
+apiPeriod(app, database.getPeriodModel())
 
 
 

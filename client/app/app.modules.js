@@ -1,10 +1,14 @@
+/*jshint -W079 */
 var Promise = Promise || ES6Promise.Promise;
 
 (function() {
 	'use strict';
-	// angular.module('ccServices')
+	angular.module('filters', [])
+	angular.module('directives', [])
+	angular.module('services', ['ngResource'])
 
-	// angular.module('ccControllers')
+	angular.module('controllers', ['currencyFilter', 'services', 'filters'])
+	// angular.module('controllers', [])
 
 	angular.module('services', ['ngResource'])
 	angular.module('controllers', ['services'])
@@ -17,7 +21,7 @@ var Promise = Promise || ES6Promise.Promise;
 			
 			// 'ngDialog',
 			// 'ccDirectives',
-			// 'ccControllers',
+			'controllers'
 			// 'ccServices'
 		])
 
