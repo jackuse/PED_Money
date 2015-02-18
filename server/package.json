@@ -1,8 +1,13 @@
 {
   "name": "MyMoney",
   "version": "0.0.1",
-  "description": "MyMoney server",
-  "dependencies": {},
+  "description": "Money like web app",
+  "dependencies": {
+    "body-parser": "*",
+    "express": "*",
+    "mongoose": "*",
+    "jsonwebtoken": "0.4.0"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "node_modules/.bin/mocha -w",

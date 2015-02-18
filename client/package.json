@@ -2,7 +2,9 @@
   "name": "MyMoneyClient",
   "version": "0.0.1",
   "description": "MyMoneyClient web app",
-  "dependencies": {},
+  "dependencies": {
+    "angular-local-storage": "^0.1.5"
+  },
   "devDependencies": {
     "bower": "*",
     "jshint": "^2.6.0"
