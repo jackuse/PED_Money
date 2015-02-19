@@ -4,14 +4,66 @@
 
 
 	angular.module('controllers')
-	.controller('periodController', ['$scope', 'periodService', '$modal', '$log', periodController])
-	.controller('ModalPeriodCtrl', ['$scope', '$modalInstance', 'intervalType', 'periodService', modalPeriodCtrl])
+	.factory('periodHelper', function(){
+		return {
+			/**
+			 * @Description
+			 * Simulate the periodic operation who will be generate
+			 * @Param {Object} The periodic operation to project
+			 * @Return {Object} The projected periodic operation
+			 */
+			genProjection : function(period){
+				var projection = []
+				// console.log(period)
+
+				var date = moment(period.dateBegin)
+
+				// Set the first operation
+				projection.push({
+					date: date.clone().toDate(),
+					amount: period.amount
+				})
+				if(period.nbRepeat === -1){
+					// If the operation is infinite show the first 12 operation
+					for(var i = 0; i<12; i++){
+						projection.push({
+							date: date.add(1*period.step, period.intervalType).clone().toDate(),
+							amount: period.amount
+						})
+					}
+				}else{
+					for(var i = 0; i<period.nbRepeat; i++){
+						var proj = {
+							date: date.add(1*period.step, period.intervalType).clone().toDate(),
+							amount: period.amount
+						}
+						projection.push(proj)
+					}
+				}
+
+				return projection
+			},
+
+
+			/**
+			 * @Description
+			 * Compute the end date of a period
+			 * @Param {Period} The period to compute
+			 * @Return {Date} The date of the end of the periodic operation
+			 */
+			computeEndDate : function(period){
+				return moment(period.dateBegin).add(period.nbRepeat*period.step, period.intervalType).toDate()
+			}
+		}
+	})
+	.controller('periodController', ['$scope', 'periodService', '$modal', '$log', 'periodHelper', periodController])
+	.controller('ModalPeriodCtrl', ['$scope', '$modalInstance', '$log', 'intervalType', 'periodService', 'periodHelper', modalPeriodCtrl])
 
 	/**
 	 * @Description
 	 * The controller of the modal for adding periodic operation
 	 */
-	function modalPeriodCtrl($scope, $modalInstance,  intervalType, periodService) {
+	function modalPeriodCtrl($scope, $modalInstance, $log, intervalType, periodService, periodHelper) {
 		$scope.intervalType = intervalType
 
 		/**
@@ -69,18 +121,6 @@
 
 		/**
 		 * @Description
-		 * Compute the end date from the repeat value
-		 * @Param {Date} The begin date
-		 * @Param {Number} The number of repeat
-		 * @Param {String} The type of interval
-		 * @Return {Date} The date of the end of the periodic operation
-		 */
-		function computeEndDate(dateBegin, nbRepeat, intervalType){
-			return moment(dateBegin).add(nbRepeat, intervalType).toDate()
-		}
-
-		/**
-		 * @Description
 		 * Reset the form of adding
 		 */
 		function resetAddForm(){
@@ -111,7 +151,7 @@
 		 */
 		$scope.cancel = function () {
 			$modalInstance.dismiss('cancel');
-		};
+		}
 
 		/**
 		 * @Description
@@ -124,14 +164,15 @@
             if (isValid) {
 
                 var tmp = getCleanForm()
-				resetAddForm()
+				
 				periodService.add(tmp).$promise.then(function(){
 					// refresh()
+					resetAddForm()
 					$modalInstance.close();
 				})
             }
 
-        };
+        }
 
         /**
 		 * @Description
@@ -148,6 +189,26 @@
 			return res
         }
 
+        /**
+		 * @Description
+		 * Prepare the form data to do the projection
+		 */
+		function prepareProjection() {
+
+			// $log.info($scope.periodForm.$valid)
+			// $log.info($scope.periodForm)
+			// $log.info($scope.projection)	
+			// $log.info(getCleanForm())	
+
+			if($scope.periodForm.$valid && $scope.periodForm.$dirty){
+				$scope.projection = periodHelper.genProjection(getCleanForm())
+			}else{
+				$scope.projection = undefined
+			}
+		}
+
+		resetAddForm()
+
 
         // Watchers for the projection
         $scope.$watch('periodTmp.intervalType', prepareProjection)
@@ -157,70 +218,13 @@
         $scope.$watch('periodTmp.dateEnd', prepareProjection)
         $scope.$watch('periodTmp.nbRepeat', prepareProjection)
         $scope.$watch('periodTmp.amount', prepareProjection)
-
-
-        /**
-		 * @Description
-		 * Prepare the form data to do the projection
-		 */
-		function prepareProjection() {
-			if($scope.periodForm.$valid){
-				makeProjection(getCleanForm())
-			}else{
-				$scope.projection = undefined
-			}
-		}
-
-
-
-        /**
-		 * @Description
-		 * Simulate the periodic operation who will be generate
-		 * @Param {Object} The period to project
-		 */
-		function makeProjection(period){
-			var projection = []
-			// console.log(period)
-
-			var date = moment(period.dateBegin)
-
-			// Set the first operation
-			projection.push({
-				date: date.clone().toDate(),
-				amount: period.amount
-			})
-			if(period.nbRepeat === -1){
-				// If the operation is infinite show the first 12 operation
-				for(var i = 0; i<12; i++){
-					projection.push({
-						date: date.add(1*period.step, period.intervalType).clone().toDate(),
-						amount: period.amount
-					})
-				}
-			}else{
-
-				for(var i = 0; i<period.nbRepeat; i++){
-					var proj = {
-						date: date.add(1*period.step, period.intervalType).clone().toDate(),
-						amount: period.amount
-					}
-					projection.push(proj)
-				}
-			}
-
-			$scope.projection = projection
-
-		}
-
-		resetAddForm()
-
 	}
 
 	/**
 	 * @Description
 	 * The controller of the periodic operation
 	 */
-	function periodController($scope, periodService, $modal, $log){
+	function periodController($scope, periodService, $modal, $log, periodHelper){
 
 		// TODO Put in shared place
  		var intervalType = [
@@ -255,47 +259,7 @@
 			});
 		};
 
-		/**
-		 * @Description
-		 * Simulate the periodic operation who will be generate
-		 * @Param {Object} The period to project
-		 */
-		$scope.makeProjection = function(period){
-			$scope.isProjection = !$scope.isProjection
-
-			if($scope.isProjection){
-				var projection = []
-				// console.log(period)
-
-				var date = moment(period.dateBegin)
-
-				// Set the first operation
-				projection.push({
-					date: date.clone().toDate(),
-					amount: period.amount
-				})
-				if(period.nbRepeat === -1){
-					// If the operation is infinite show the first 12 operation
-					for(var i = 0; i<12; i++){
-						projection.push({
-							date: date.add(1*period.step, period.intervalType).clone().toDate(),
-							amount: period.amount
-						})
-					}
-				}else{
-
-					for(var i = 0; i<period.nbRepeat; i++){
-						var proj = {
-							date: date.add(1*period.step, period.intervalType).clone().toDate(),
-							amount: period.amount
-						}
-						projection.push(proj)
-					}
-				}
-
-				$scope.projection = projection
-			}
-		}
+		
 
 		/**
 		 * @Description
@@ -306,21 +270,12 @@
 			// TODO
 		}
 
-		/**
-		 * @Description
-		 * Compute the end date from the repeat value
-		 * @Param {Date} The begin date
-		 * @Param {Number} The number of repeat
-		 * @Param {String} The type of interval
-		 * @Return {Date} The date of the end of the periodic operation
-		 */
-		function computeEndDateOld(dateBegin, nbRepeat, intervalType){
-			return moment(dateBegin).add(nbRepeat, intervalType).toDate()
+		$scope.makeProjection = function(period){
+			$scope.isProjection = !$scope.isProjection
+			$scope.projection = periodHelper.genProjection(period)
 		}
 
-		function computeEndDate(period){
-			return moment(period.dateBegin).add(period.nbRepeat*period.step, period.intervalType).toDate()
-		}
+
 
 		/**
 		 * @Description
@@ -342,7 +297,7 @@
 				// console.log(periods)
 				$.each(periods, function(k, period){
 					if(period.nbRepeat !== -1){
-						periods[k].dateEnd = computeEndDate(period)
+						periods[k].dateEnd = periodHelper.computeEndDate(period)
 					}
 					
 					// console.log(period)
