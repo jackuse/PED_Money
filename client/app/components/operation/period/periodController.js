@@ -4,75 +4,256 @@
 
 
 	angular.module('controllers')
-	.controller('periodController', ['$scope', 'periodService', periodController])
-	// .directive('blacklist', function (){ 
-	// 	return {
-	// 		require: 'ngModel',
-	// 		link: function(scope, elem, attr, ngModel) {
-	// 			var blacklist = attr.blacklist.split(',')
+	.controller('periodController', ['$scope', 'periodService', '$modal', '$log', periodController])
+	.controller('ModalPeriodCtrl', ['$scope', '$modalInstance', 'intervalType', 'periodService', modalPeriodCtrl])
 
-	// 			//For DOM -> model validation
-	// 			ngModel.$parsers.unshift(function(value) {
-	// 				var valid = blacklist.indexOf(value) === -1
-	// 				ngModel.$setValidity('blacklist', valid)
-	// 				return valid ? value : undefined
-	// 			})
-
-	// 			//For model -> DOM validation
-	// 			ngModel.$formatters.unshift(function(value) {
-	// 				ngModel.$setValidity('blacklist', blacklist.indexOf(value) === -1)
-	// 				return value
-	// 			})
-	// 		}
-	// 	}
-	// })
-	.directive('dateBefore', function (){ 
-		return {
-			require: 'ngModel',
-			restrict: '',
-			link: function(scope, elem, attr, ctrl) {
-				var otherValue = attr.before
-				// alert(attr)
-				// console.log(attr)
-				// if(otherValue === undefined){
-				// 	alert('otherValue is undefined')
-				// }
-				// alert('dateBefore')
-				if (ctrl) {
-					ctrl.$validators.date = function(modelValue) {
-						// alert(modelValue+' / '+otherValue)
-						if(ctrl.$isEmpty(modelValue)){
-							return true
-						}
-						if(otherValue === undefined || modelValue === undefined ){
-							return false
-						}
-
-						if(moment(modelValue).isBefore(moment(otherValue))){
-							return true
-						}
-
-						return false
-
-						// return ctrl.$isEmpty(modelValue) || (otherValue !== undefined && moment(modelValue).before(moment(otherValue)))
-					}
-				}
-			}
-		}
-	})
-
-
-	function periodController($scope, periodService){
-
-		// TODO Put in shared place
-		var intervalType = [
-				{type:'day', value:1, code:'d'},
-				{type:'week', value:7, code:'w'},
-				{type:'month', value:30, code:'M'},
-				{type:'year', value:365, code:'Y'}
-			]
+	/**
+	 * @Description
+	 * The controller of the modal for adding periodic operation
+	 */
+	function modalPeriodCtrl($scope, $modalInstance,  intervalType, periodService) {
 		$scope.intervalType = intervalType
 
+		/**
+		 * @Description
+		 * Compute the repeat value from the end date
+		 */
+		$scope.computeRepeatDate = function(){
+			var begin = moment($scope.periodTmp.dateBegin)	
+			var end = moment($scope.periodTmp.dateEnd)
+			if(end.isBefore(begin)){
+				// error
+			}else{
+				var diff = end.diff(begin, 'days')
+				var repeat = Math.round(diff / $scope.periodTmp.intervalType.value)
+				$scope.periodTmp.nbRepeat = repeat
+			}
+		}
+
+		/**
+		 * @Description
+		 * Manage click on the infinite checkbox 
+		 */
+		$scope.setInfinite = function(){
+
+			// Need by the form validation
+			if($scope.periodTmp.isInfinite){ 
+				$scope.periodTmp.nbRepeat = 1
+				$scope.computeDateRepeat()
+			}
+
+			// if($scope.periodTmp.isInifinite){
+			// 	$scope.periodTmp.nbRepeat = -1
+
+			// 	$scope.periodTmp.dateEnd = undefined
+			// }else{
+			// 	$scope.periodTmp.nbRepeat = 1
+			// 	$scope.computeDateRepeat()
+			// }
+		}
+
+		/**
+		 * @Description
+		 * Compute the end date from the repeat value
+		 */
+		$scope.computeDateRepeat = function(){
+			var begin = moment($scope.periodTmp.dateBegin)
+			var repeat = $scope.periodTmp.nbRepeat
+			var interval = $scope.periodTmp.intervalType.value
+
+			// var end = begin.clone().add(interval*repeat, 'days')
+			var end = begin.clone().add(repeat, $scope.periodTmp.intervalType.code)
+
+			$scope.periodTmp.dateEnd = end.toDate()
+		}
+
+		/**
+		 * @Description
+		 * Compute the end date from the repeat value
+		 * @Param {Date} The begin date
+		 * @Param {Number} The number of repeat
+		 * @Param {String} The type of interval
+		 * @Return {Date} The date of the end of the periodic operation
+		 */
+		function computeEndDate(dateBegin, nbRepeat, intervalType){
+			return moment(dateBegin).add(nbRepeat, intervalType).toDate()
+		}
+
+		/**
+		 * @Description
+		 * Reset the form of adding
+		 */
+		function resetAddForm(){
+			// $scope.periodTmp = {
+			// 	name: 'Test',
+			// 	dateBegin: new Date(2015, 1, 13),
+			// 	dateEnd: new Date(2015, 5, 13),
+			// 	nbRepeat: 4,
+			// 	step: 1,
+			// 	intervalType: intervalType[2],
+			// 	amount: 52
+			// }
+			$scope.periodTmp = {
+				name: '',
+				dateBegin: undefined,
+				dateEnd: undefined,
+				nbRepeat: undefined,
+				step: 1,
+				intervalType: intervalType[2],
+				amount: undefined,
+				isInfinite: false
+			}
+		}
+
+		/**
+		 * @Description
+		 * Cancel the adding and close the modal
+		 */
+		$scope.cancel = function () {
+			$modalInstance.dismiss('cancel');
+		};
+
+		/**
+		 * @Description
+		 * Submit the form and close the modal
+		 * @Param {Boolean} True if the form is valdid
+		 */
+		$scope.submitForm = function(isValid) {
+			// console.log('submitForm '+isValid)
+            // check to make sure the form is completely valid
+            if (isValid) {
+
+                var tmp = getCleanForm()
+				resetAddForm()
+				periodService.add(tmp).$promise.then(function(){
+					// refresh()
+					$modalInstance.close();
+				})
+            }
+
+        };
+
+        /**
+		 * @Description
+		 * Clean the form data to make it coherent
+		 * @Return {Object} The clean data of the form
+		 */
+        function getCleanForm(){
+        	var res = jQuery.extend(true, {}, $scope.periodTmp);
+			res.intervalType = res.intervalType.code
+			if(res.isInfinite){
+				res.nbRepeat = -1
+				res.dateEnd = undefined
+			}
+			return res
+        }
+
+
+        // Watchers for the projection
+        $scope.$watch('periodTmp.intervalType', prepareProjection)
+        $scope.$watch('periodTmp.step', prepareProjection)
+        $scope.$watch('periodTmp.dateBegin', prepareProjection)
+        $scope.$watch('periodTmp.isInfinite', prepareProjection)
+        $scope.$watch('periodTmp.dateEnd', prepareProjection)
+        $scope.$watch('periodTmp.nbRepeat', prepareProjection)
+        $scope.$watch('periodTmp.amount', prepareProjection)
+
+
+        /**
+		 * @Description
+		 * Prepare the form data to do the projection
+		 */
+		function prepareProjection() {
+			if($scope.periodForm.$valid){
+				makeProjection(getCleanForm())
+			}else{
+				$scope.projection = undefined
+			}
+		}
+
+
+
+        /**
+		 * @Description
+		 * Simulate the periodic operation who will be generate
+		 * @Param {Object} The period to project
+		 */
+		function makeProjection(period){
+			var projection = []
+			// console.log(period)
+
+			var date = moment(period.dateBegin)
+
+			// Set the first operation
+			projection.push({
+				date: date.clone().toDate(),
+				amount: period.amount
+			})
+			if(period.nbRepeat === -1){
+				// If the operation is infinite show the first 12 operation
+				for(var i = 0; i<12; i++){
+					projection.push({
+						date: date.add(1*period.step, period.intervalType).clone().toDate(),
+						amount: period.amount
+					})
+				}
+			}else{
+
+				for(var i = 0; i<period.nbRepeat; i++){
+					var proj = {
+						date: date.add(1*period.step, period.intervalType).clone().toDate(),
+						amount: period.amount
+					}
+					projection.push(proj)
+				}
+			}
+
+			$scope.projection = projection
+
+		}
+
+		resetAddForm()
+
+	}
+
+	/**
+	 * @Description
+	 * The controller of the periodic operation
+	 */
+	function periodController($scope, periodService, $modal, $log){
+
+		// TODO Put in shared place
+ 		var intervalType = [
+			{type:'day', value:1, code:'d'},
+			{type:'week', value:7, code:'w'},
+			{type:'month', value:30, code:'M'},
+			{type:'year', value:365, code:'Y'}
+		]
+		$scope.intervalType = intervalType
+
+		/**
+		 * @Description
+		 * Open the modal for adding periodic operation
+		 */
+		$scope.openAdd = function () {
+
+			var modalInstance = $modal.open({
+				templateUrl: 'periodModalContent.html',
+				controller: 'ModalPeriodCtrl',
+				// size: 'sm',
+				resolve: {
+					intervalType: function () {
+						return $scope.intervalType;
+					}
+				}
+			});
+
+			modalInstance.result.then(function (selectedItem) {
+				refresh()
+			}, function () {
+				$log.info('Modal dismissed at: ' + new Date());
+			});
+		};
 
 		/**
 		 * @Description
@@ -127,132 +308,43 @@
 
 		/**
 		 * @Description
-		 * Compute the repeat value from the end date
-		 */
-		$scope.computeRepeatDate = function(){
-			var begin = moment($scope.periodTmp.dateBegin)	
-			var end = moment($scope.periodTmp.dateEnd)
-			if(end.isBefore(begin)){
-				// error
-			}else{
-				var diff = end.diff(begin, 'days')
-				var repeat = Math.round(diff / $scope.periodTmp.intervalType.value)
-				$scope.periodTmp.nbRepeat = repeat
-			}
-		}
-
-		/**
-		 * @Description
-		 * Manage click on the infinite checkbox 
-		 */
-		$scope.setInfinite = function(){
-			if($scope.periodTmp.isInifinite){
-				$scope.periodTmp.nbRepeat = -1
-
-				$scope.periodTmp.dateEnd = undefined
-			}else{
-				$scope.periodTmp.nbRepeat = 1
-				$scope.computeDateRepeat()
-			}
-		}
-
-		/**
-		 * @Description
-		 * Compute the end date from the repeat value
-		 */
-		$scope.computeDateRepeat = function(){
-			
-
-			var begin = moment($scope.periodTmp.dateBegin)
-			var repeat = $scope.periodTmp.nbRepeat
-			var interval = $scope.periodTmp.intervalType.value
-
-
-
-			// var end = begin.clone().add(interval*repeat, 'days')
-			var end = begin.clone().add(repeat, $scope.periodTmp.intervalType.code)
-
-			$scope.periodTmp.dateEnd = end.toDate()
-		}
-
-		/**
-		 * @Description
 		 * Compute the end date from the repeat value
 		 * @Param {Date} The begin date
 		 * @Param {Number} The number of repeat
 		 * @Param {String} The type of interval
 		 * @Return {Date} The date of the end of the periodic operation
 		 */
-		function computeEndDate(dateBegin, nbRepeat, intervalType){
+		function computeEndDateOld(dateBegin, nbRepeat, intervalType){
 			return moment(dateBegin).add(nbRepeat, intervalType).toDate()
+		}
+
+		function computeEndDate(period){
+			return moment(period.dateBegin).add(period.nbRepeat*period.step, period.intervalType).toDate()
 		}
 
 		/**
 		 * @Description
-		 * Reset the form of adding
+		 * Remove periodic operation from the data model and refresh the page
+		 * @Param {Object} The period operation to remove
 		 */
-		function resetAddForm(){
-			// $scope.periodTmp = {
-			// 	name: 'Test',
-			// 	dateBegin: new Date(2015, 1, 13),
-			// 	dateEnd: new Date(2015, 5, 13),
-			// 	nbRepeat: 4,
-			// 	step: 1,
-			// 	intervalType: intervalType[2],
-			// 	amount: 52
-			// }
-				$scope.periodTmp = {
-					name: "",
-					dateBegin: "",
-					dateEnd: undefined,
-					nbRepeat: undefined,
-					step: 0,
-					intervalType: "",
-					amount: 0
-				}
-		}
-
-		$scope.add = function(){
-			$scope.isAdding = true
-		}	
-
-
-		$scope.addValid = function(){
-			var tmp = jQuery.extend(true, {}, $scope.periodTmp);
-			tmp.intervalType = tmp.intervalType.code
-			$scope.isAdding = false
-			resetAddForm()
-			periodService.add(tmp).$promise.then(function(){
-				refresh()
-			})
-		}		
-
-		$scope.addCancel = function(){
-			$scope.isAdding = false
-			resetAddForm()
-		}
-
 		$scope.remove = function(period){
 			periodService.remove(period._id)
 			refresh()
 		}
 
-
-		$scope.submitForm = function(isValid) {
-
-            // check to make sure the form is completely valid
-            if (isValid) {
-                alert('our form is amazing');
-            }
-
-        };
-
+		/**
+		 * @Description
+		 * Refresh the page
+		 */
 		function refresh(){
 			// console.log(periodService.getAll())
 			periodService.getAll().$promise.then(function(periods){
 				// console.log(periods)
 				$.each(periods, function(k, period){
-					periods[k].dateEnd = computeEndDate(period.dateBegin, period.nbRepeat, period.intervalType)
+					if(period.nbRepeat !== -1){
+						periods[k].dateEnd = computeEndDate(period)
+					}
+					
 					// console.log(period)
 				})
 				$scope.periods = periods
@@ -260,7 +352,7 @@
 			
 		}
 
-		resetAddForm()
+		// Controller initialisation
 		refresh()
 	}
 
