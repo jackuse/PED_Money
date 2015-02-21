@@ -9,5 +9,4 @@ before_install:
   - npm install -g bower grunt-cli
 before_script:
   - gem install sass
-  - bower install
 services: mongodb
