@@ -30,6 +30,6 @@
     "karma": "karma start ./client/karma.conf.js",
     "jshint": "jshint client/app",
     "jshints": "jshint server/*.js",
-    "installAll": "bower install"
+    "install": "bower install"
   }
 }
